@@ -1,0 +1,334 @@
+complex-chart-sample.html
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.min.js"></script>
+
+
+<div class="container" style="width:100%">
+    <canvas id="canvas"></canvas>
+</div>
+
+
+
+<script>
+window.onload = function() {
+    ctx = document.getElementById("canvas").getContext("2d");
+    calc();
+    window.myBar = new Chart(ctx, {
+        type: 'bar',
+        data: barChartData,
+        options: complexChartOption
+    });
+};
+</script>
+
+
+
+<script>
+  var rep = [];
+  var rep1 = [];
+  var rep2 = [];
+  var rep3 = [];
+  var w1 = [];
+  var w2 = [];
+  var speed3 = [];
+  var time = [];
+
+  function saikiTmp(array, array_t) {
+  for(i = 0; i < array.length; i++){
+    if(array[i-1]-array[i] >= 100 && i > 0){
+      array.splice(i, 1);
+      array_t.splice(i,1);
+      saikiTmp(array,array_t);
+    }
+  }
+
+  return [array,array_t]
+}
+
+// CSVファイル読み込み
+function csvToArray(path) {
+	var csvData = new Array();
+	var data = new XMLHttpRequest();	
+	data.open("GET", path, false);
+	data.send(null);
+	var LF = String.fromCharCode(10);
+	var lines = data.responseText.split(LF);
+	for (var i = 0; i < lines.length;++i) {
+		var cells = lines[i].split(",");
+		if( cells.length != 1 ) {
+			csvData.push(cells);
+		}
+	}
+	return csvData;
+}
+
+function calc() {
+var tmp1 = [];
+var tmp1_t = [];
+var tmp2 = [];
+var tmp2_t = [];
+var tmp33 = [];
+var tmp33_t = [];
+rep = [];
+rep1 = [];
+rep2 = [];
+rep3 = [];
+w1 = [];
+w2 = [];
+speed3 = [];
+time = [];
+
+var record1 = csvToArray("record_right.csv");
+var record2 = csvToArray("record_left.csv");
+var centergx = csvToArray("centergx.csv");
+
+for (var i = 0;i < record1.length; i++) {
+  var tmp = [2];
+  tmp = record1[i].split(',');
+  tmp1_t[i] = (Number(tmp[1]));
+  tmp1[i] = (Number(tmp[0]));
+}
+
+for (var i = 0;i < record2.length; i++) {
+  var tmp = [2]; 
+  tmp = record2[i].split(',');
+  tmp2_t[i] = (Number(tmp[1]));
+  tmp2[i] = (Number(tmp[0]));
+}
+
+for (var i = 0;i < centergx.length; i++) {
+  var tmp = [2]; 
+  tmp = window.centergx[i].split(',');
+  tmp33_t[i] = (Number(tmp[1]));
+  tmp33[i] = (Number(tmp[0]));
+}
+
+var t1 = 0;
+var t2 = 0;
+var t3 = 0;
+
+let arrayTmp = saikiTmp(tmp33,tmp33_t);
+
+var tmp3pre = arrayTmp[0];
+var tmp3pre_t = arrayTmp[1];
+
+var tmp3 = [];
+var tmp3_t = [];
+
+for (var i = 0;i <tmp3pre.length-1; i++) {
+  var sum = 0;
+  for(var j = 0;j < 4; j++) {
+    sum += tmp3pre[i+j];
+  }
+  tmp3[i] = sum/4.0;
+
+  var sum_t = 0;
+  for(var j=0; j<3; j++) {
+    sum_t += tmp3pre_t[i];
+  }
+  tmp3_t[i] = sum_t/4.0;
+}
+
+var n1 = tmp1_t[0];
+var n2 = tmp2_t[0];
+var n3 = tmp3_t[0];
+
+var min = n1;
+if( n2 < min ) {
+  min = n2;
+}
+if( n3 < min ) {
+  min = n3;
+}
+
+var m1 = tmp1_t[tmp1.length-1];
+var m2 = tmp2_t[tmp2.length-1];
+var m3 = tmp3_t[tmp3.length-1];
+
+console.log(m1, m2, m3);
+var max = m1;
+if( max < m2 ) {
+  max = m2;
+}
+if( max < m3 ) {
+  max = m3;
+}
+
+console.log(min, max);
+
+const s = (1.65/210)*1000;
+speed3[0] = 0;
+for (let i = 1; i < tmp3.length; i++) {
+  if(tmp3[i] <= tmp3[i-1]){
+    speed3[i] = speed3[i-1];
+  } else {
+    speed3[i] = ((tmp3[i]-tmp3[i-1])*s)/((tmp3_t[i]-tmp3_t[i-1]));
+  }
+}
+
+for (var i = 0;i <speed3.length-1; i++) {
+  var sum = 0;
+  for(var j = 0;j < 4; j++) {
+    sum += speed3[i+j];
+  }
+  speed4[i] = sum/4.0;
+}
+
+let k = 0;
+for (let i = min; i <= max; i++){
+  var c = 0;
+  if(tmp1_t[t1] <= i){
+    c = 1;
+    rep[k] = tmp1_t[t1];
+    rep1[k] = tmp1[t1];
+    rep2[k] = tmp2[t2];
+    rep3[k] = speed4[t3];
+    t1++;
+  }
+  if(tmp2_t[t2] <= i){
+    c = 2;
+    rep[k] = tmp2_t[t2];
+    rep1[k] = tmp1[t1];
+    rep2[k] = tmp2[t2];
+    rep3[k] = speed4[t3];
+    t2++;
+    }
+    if(tmp3_t[t3] <= i){
+      c = 3;
+      rep[k] = tmp3_t[t3];
+      rep1[k] = tmp1[t1];
+      rep2[k] = tmp2[t2];
+      rep3[k] = speed4[t3];
+      t3++;
+    }
+    if(c != 0){
+      k++;
+    }
+  }
+
+  for (let i = 1; i < rep1.length; i++) {
+    w1[i] = 1.7*(157.63514*Math.exp(-0.00454899421*(rep1[i]-567.574356)) - 17.8917946);
+  }
+
+  for (let i = 1; i < rep2.length; i++) {
+    w2[i] = 1.7*(157.63514*Math.exp(-0.00454899421*(rep2[i]-567.574356)) - 17.8917946);
+  }
+
+  let del = 0;
+  for(let i = rep.length-1; i >= 0; i--) {
+    console.log(w1[i],w2[i]);
+    if((w1[i] < 10 && w2[i] < 10) || (isNaN(w1[i]) && w2[i] < 10) || (w1[i] < 10 && isNaN(w2[i])) || (isNaN(w1[i]) && isNaN(w2[i])) ){
+      del++;
+    }else {
+      break;
+    }
+  }
+
+  for(let i = 0; i < del; i++){
+    rep.pop();
+    w1.pop();
+    w2.pop();
+    rep3.pop();
+  }
+
+  del = 0;
+  for(let i = 0; i <rep.length; i++) {
+    if((w1[i] < 10 && w2[i] < 10) || (isNaN(w1[i]) && w2[i] < 10) || (w1[i] < 10 && isNaN(w2[i])) || (isNaN(w1[i]) && isNaN(w2[i])) ){
+      del++;
+    }else {
+      break;
+    }
+  }
+
+  for(let i = 0; i < del; i++){
+    rep.shift();
+    w1.shift();
+    w2.shift();
+    rep3.shift();
+  }
+}
+var barChartData = {
+    labels: rep,
+    datasets: [
+    {
+        type: 'line',
+        label: '地面反力(踏込脚)',
+        data: w1,
+        borderColor : "rgba(54,164,235,0.8)",
+        fill: false,
+        pointRadius: 0,
+        yAxisID: "y-axis-1",// 追加
+        cubicInterpolationMode: "default",
+    },{
+        type: 'line',
+        label: '地面反力(軸足)',
+        data: w2,
+        borderColor : "rgba(132,235,94,0.8)",
+        fill: false,
+        pointRadius: 0,
+        yAxisID: "y-axis-1",// 追加
+        cubicInterpolationMode: "default",
+    },
+    {
+        type: 'line',
+        label: '重心移動速度',
+        data: rep3,
+        borderColor : "rgba(254,97,132,0.5)",
+        fill: false,
+        pointRadius: 0,
+        yAxisID: "y-axis-2",
+        cubicInterpolationMode: "default",
+    },
+    ],
+};
+</script>
+
+
+
+<script>
+var complexChartOption = {
+    responsive: true,
+    scales: {
+        xAxes: [{scaleLabel: {                 // 軸ラベル
+                            display: true,                // 表示設定
+                            labelString: '経過秒数[ms]',    // ラベル
+                            fontColor: "black",             // 文字の色
+                            fontSize: 16                  // フォントサイズ
+                        }}],
+        yAxes: [{
+            id: "y-axis-1",
+            type: "linear", 
+            position: "left",
+            scaleLabel: {                 // 軸ラベル
+                            display: true,                // 表示設定
+                            labelString: '[kgf]',    // ラベル
+                            fontColor: "black",             // 文字の色
+                            fontSize: 16            // フォントサイズ
+                        },
+            ticks: {
+                max: 100,
+                min: 0,
+                stepSize: 10
+            },
+        },{
+            id: "y-axis-2",
+            type: "linear", 
+            position: "right",
+            scaleLabel: {                 // 軸ラベル
+                            display: true,                // 表示設定
+                            labelString: '[m/s]',    // ラベル
+                            fontColor: "black",             // 文字の色
+                            fontSize: 16                  // フォントサイズ
+                        },
+            ticks: {
+                max: 5,
+                min: -2,
+                stepSize: 1
+            },
+            gridLines: {
+                drawOnChartArea: false, 
+            },
+        },],
+    }
+};
+</script>
