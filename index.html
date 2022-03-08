@@ -204,8 +204,8 @@ for (let i = min; i <= max; i++){
     if(c != 0){
       k++;
     }
-    console.log(rep[k],rep1[k],rep2[k],rep3[k],
-     tmp1[t1],tmp1_t[t1],tmp2[t2],tmp2_t[t2],tmp3,tmp3_t[t3]);
+    //console.log(rep[k],rep1[k],rep2[k],rep3[k],
+     //tmp1[t1],tmp1_t[t1],tmp2[t2],tmp2_t[t2],tmp3,tmp3_t[t3]);
   }
 
   for (let i = 1; i < rep1.length; i++) {
@@ -218,7 +218,6 @@ for (let i = min; i <= max; i++){
 
   let del = 0;
   for(let i = rep.length-1; i >= 0; i--) {
-    console.log(w1[i],w2[i]);
     if((w1[i] < 10 && w2[i] < 10) || (isNaN(w1[i]) && w2[i] < 10) || (w1[i] < 10 && isNaN(w2[i])) || (isNaN(w1[i]) && isNaN(w2[i])) ){
       del++;
     }else {
