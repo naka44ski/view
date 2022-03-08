@@ -34,11 +34,14 @@ window.onload = function() {
   var time = [];
 
   function saikiTmp(array, array_t) {
-  for(i = 0; i < array.length; i++){
-    if(array[i-1]-array[i] >= 100 && i > 0){
+  for(i = 1; ; i++){
+    if(i >= array.length){
+      break;
+    }
+    if(Math.abs(array[i-1]-array[i]) >= 100){
       array.splice(i, 1);
       array_t.splice(i,1);
-      saikiTmp(array,array_t);
+      i = i-1;
     }
   }
 
@@ -96,6 +99,8 @@ for (var i = 0;i < centergx.length; i++) {
   tmp33_t[i] = (Number(centergx[i][1]));
   tmp33[i] = (Number(centergx[i][0]));
 }
+
+console.log(tmp1,tmp1_t,tmp2,tmp2_t,tmp33,tmp33_t)
 
 var t1 = 0;
 var t2 = 0;
