@@ -83,13 +83,13 @@ var record2 = csvToArray("record_left.csv");
 var centergx = csvToArray("centergx.csv");
 
 console.log(record1,record2,centergx);
-	
+
 for (var i = 0;i < record1.length; i++) {
-  var tmp = [2];
-  tmp = record1[i].split(',');
-  tmp1_t[i] = (Number(tmp[1]));
-  tmp1[i] = (Number(tmp[0]));
+  tmp1_t[i] = (Number(record1[i][1]));
+  tmp1[i] = (Number(record1[i][0]));
 }
+
+console.log(tmp1,tmp1_t);
 
 for (var i = 0;i < record2.length; i++) {
   var tmp = [2]; 
