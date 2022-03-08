@@ -16,22 +16,18 @@
 </head>
 
 <body>
-  <div class="container" style="width:100%">
-    <canvas id="canvas"></canvas>
-  </div>
+  <canvas id="myChart7" height="200px"></canvas>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.js"></script>
+  <script type="text/javascript" src="https://github.com/nagix/chartjs-plugin-streaming/releases/download/v1.2.0/chartjs-plugin-streaming.js"></script>
 </body>
 
 
 
 <script>
 window.onload = function() {
-    ctx = document.getElementById("canvas").getContext("2d");
-    calc();
-    window.myBar = new Chart(ctx, {
-        type: 'bar',
-        data: barChartData,
-        options: complexChartOption
-    });
+  display_7("myChart7");
 };
 </script>
 
@@ -47,6 +43,8 @@ window.onload = function() {
   var speed3 = [];
   var speed4 = [];
   var time = [];
+  var barChartData;
+  var complexChartOption;
 
   function saikiTmp(array, array_t) {
   for(i = 1; ; i++){
@@ -261,8 +259,8 @@ for (let i = min; i <= max; i++){
     w2.shift();
     rep3.shift();
   }
-}
-var barChartData = {
+
+  barChartData = {
     labels: rep,
     datasets: [
     {
@@ -295,13 +293,9 @@ var barChartData = {
         cubicInterpolationMode: "default",
     },
     ],
-};
-</script>
+  };
 
-
-
-<script>
-var complexChartOption = {
+  complexChartOption = {
     responsive: true,
     scales: {
         xAxes: [{scaleLabel: {                 // 軸ラベル
@@ -344,6 +338,18 @@ var complexChartOption = {
                 drawOnChartArea: false, 
             },
         },],
-    }
+      }
+  };
+};
+
+//描画処理
+var display_7 = function(chartname) {
+  calc();
+  ctx = document.getElementById(chartname).getContext("2d");
+  window.myBar = new Chart(ctx, {
+      type: 'bar',
+      data: barChartData,
+      options: complexChartOption
+  });
 };
 </script>
